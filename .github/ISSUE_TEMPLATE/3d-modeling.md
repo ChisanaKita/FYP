@@ -1,7 +1,7 @@
 ---
 name: 3D Modeling
 about: This Template is for opening a new 3D modeling TODO item
-title: 3D Modeling
+title: "[v0.x] 3D Modeling - <Item Name>"
 labels: 3D Modeling
 assignees: Leong15
 
@@ -12,3 +12,5 @@ assignees: Leong15
 - [ ] Design
 - [ ] Modeling
 - [ ] QA
+
+Reference :
