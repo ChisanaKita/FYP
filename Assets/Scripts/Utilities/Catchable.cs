@@ -1,18 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Timers;
-using VRF.Driver;
 
-namespace VRF
+namespace VRF.Util
 {
     public abstract class Catchable : MonoBehaviour
     {
-        protected Timer CatchTimer;
+        private Timer CatchTimer;
 
-        public abstract FishType Type { get; }
+        public abstract FishSize Size { get; }
 
-        protected virtual void StartCounting(int Interval)
+        private void OnDestroy()
+        {
+              CatchTimer.Dispose();
+        }
+        private void Awake()
+        {
+            CatchTimer = new Timer();
+        }
+
+        protected void StartCatchTimer(int Interval)
         {
             if (CatchTimer.Enabled)
             {
@@ -20,23 +26,36 @@ namespace VRF
             }
             else
             {
+                CatchTimer.Enabled = true;
                 Debug.Log("Fish Catch-Timer Started Counting.");
-                CatchTimer.Interval = (int)Type * Interval;
+                CatchTimer.Interval = (int)Size * Interval;
                 CatchTimer.Start();
             }
-
         }
 
-        protected virtual void StopCounting()
+        protected void StopCatchTimer()
         {
+            CatchTimer.Enabled = false;
             CatchTimer.Stop();
         }
 
-        protected void OnTimesUp(object obj, ElapsedEventArgs eventArgs)
+        private void OnTimesUp(object obj, ElapsedEventArgs eventArgs)
         {
-            CatchTimer.Stop();
+            StopCatchTimer();
+            transform.parent = null;
             Debug.Log("Catch-Timer Time-Up!");
-            EntityDriver.Instance.OnFishBiting();
+        }
+
+        //Fishing Rod
+        public virtual void OnTriggerEnter(Collider other)
+        {
+            Debug.Log("Fishing Bait Entered!");
+        }
+
+        //Water Area
+        public virtual void OnTriggerExit(Collider other)
+        {
+            Debug.Log("Fish Left Water!");
         }
     }
 }

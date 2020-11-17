@@ -1,59 +1,158 @@
-﻿using System.Collections;
-using System;
-using System.Timers;
-using UnityEngine;
+﻿using UnityEngine;
 using VRF.Driver;
+using VRF.Util;
+using System;
+using System.Collections;
 
 namespace VRF
 {
-    public class Fish : Catchable
+    public class Fish : Catchable, IFish
     {
+        public override FishSize Size => (FishSize)SRandom.Instance.GetRandom(1, Enum.GetNames(typeof(FishSize)).Length - 1);
 
+        private readonly float CONS_ROTATION_SPEED = 30;
+
+        public bool IsBaiting { get; set; }
         public bool IsCatched { get; set; }
-
         public int CatchThreshold { get; set; }
+        public string Name { get; set; }
 
-        public string Name { get; }
+        private bool IsBaitPresent { get; set;}
+        private bool IsTurning { get; set; }
+        private bool Ismoving { get; set; }
+        public bool IsCoroutineRunning { get; set; }
+        private Vector3 TargetAngleVector;
+        private Rigidbody m_rigidbody;
 
-        public override FishType Type => (FishType)GetRandomFishType();
+        #region Event_Handling
+        private void Awake()
+        {
+            EntityDriver.Instance.Catched += Catched;
+            EntityDriver.Instance.BaitEntered += BaitEntered;
+        }
 
-        // Start is called before the first frame update
-        void Start()
+        private void OnDestroy()
+        {
+            EntityDriver.Instance.Catched -= Catched;
+            EntityDriver.Instance.BaitEntered -= BaitEntered;
+        }
+        #endregion
+
+        private void Start()
         {
             CatchThreshold = 1;
+
             IsCatched = false;
-            CatchTimer = new Timer();
-            CatchTimer.Elapsed += OnTimesUp;
-            Debug.LogFormat("Fish tpye : {0}", Type);
+            IsBaiting = false;
+            IsBaitPresent = false;
+            IsTurning = false;
+            Ismoving = false;
+            IsCoroutineRunning = false;
+
+            Name = Enum.GetName(typeof(FishType), SRandom.Instance.GetRandom(0, Enum.GetNames(typeof(FishType)).Length - 1));
+
+            TargetAngleVector = GetRandomVector3();
+            transform.localEulerAngles = TargetAngleVector;
+
+            m_rigidbody = GetComponent<Rigidbody>();
+
+            Debug.LogFormat("Fish tpye : {0}, Name : {1}", Size, Name);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (IsBaitPresent)
             {
-                StartCounting(2);
+                //Turn
+                if (IsTurning)
+                {
+                    if (Vector3.Distance(transform.localEulerAngles, TargetAngleVector) < 0.001f)
+                    {
+                        IsTurning = false;
+                        transform.localEulerAngles = TargetAngleVector;
+                    }
+                    else
+                    {
+                        transform.localEulerAngles = Vector3.MoveTowards(transform.localEulerAngles, TargetAngleVector, Time.deltaTime * CONS_ROTATION_SPEED);
+                    }
+                }
+                else
+                {
+                    if (IsCoroutineRunning == false)
+                    {
+                        StartCoroutine(AttemptToTurn());
+                        Debug.Log("Attempting to turn.");
+                    }
+                }
+
+                //Move
+                if (Ismoving)
+                {
+                    m_rigidbody.velocity = transform.forward * 1;
+                }
             }
         }
 
-        int GetRandomFishType()
+        Vector3 GetRandomVector3()
         {
-            System.Random rand = new System.Random();
-            return rand.Next(1, 3);
+            return new Vector3(0, SRandom.Instance.GetRandom(0, 360), 0);
         }
 
-
-
-        //Fishing Rod
-        private void OnTriggerEnter(Collider other)
+        public override void OnTriggerEnter(Collider other)
         {
-            
+            if (IsBaitPresent)
+            {
+                if (other.tag == "Bait")
+                {
+                    base.OnTriggerEnter(other);
+                    EntityDriver.Instance.OnFishBiting();
+                    IsBaiting = true;
+                    StartCatchTimer((int)Size);
+                    transform.SetParent(other.transform);
+                }
+            }
+        }
+        
+        public override void OnTriggerExit(Collider other)
+        {
+            if (other.tag == "Water")
+            {
+                if (IsBaiting)
+                {
+                    base.OnTriggerExit(other);
+                    EntityDriver.Instance.OnCatched();
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
 
-        //Water Area
-        private void OnTriggerExit(Collider other)
+        private void Catched()
         {
-            
+            IsCatched = true;
+            IsBaiting = false;
         }
+
+        private void BaitEntered()
+        {
+            IsBaitPresent = true;
+        }
+
+        private IEnumerator AttemptToTurn()
+        {
+            IsCoroutineRunning = true;
+            yield return new WaitForSeconds(5);
+            if ((SRandom.Instance.GetRandom(0, 20) % 2) == 0)
+            {
+                IsTurning = true;
+                TargetAngleVector = GetRandomVector3();
+                Debug.Log("Truning Vector : " + TargetAngleVector.y);
+            }
+            IsCoroutineRunning = false;
+        }
+
     }
 }

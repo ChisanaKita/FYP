@@ -1,54 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Timers;
-using UnityEngine;
+﻿using UnityEngine;
 using VRF.Driver;
+using VRF.Util;
 
 namespace VRF
 {
-    public class Player : MonoBehaviour
+    public class Player : Playable
     {
-        Timer CatchableTime;
-
-        #region DEBUG
-        public bool isCatchable { get; set; }
-        #endregion
-
         // Start is called before the first frame update
         void Start()
         {
             EntityDriver.Instance.FishBiting += FishBiting;
-            CatchableTime = new Timer();
-            CatchableTime.Interval = 2000;
-            CatchableTime.Elapsed += OnCatchTimerEnd;
+            EntityDriver.Instance.FishBiteEnd += CatchFailed;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (isCatchable)
-            {
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    Debug.Log("Catch!");
-                    CatchableTime.Stop();
-                }
-            }
+
         }
 
         void FishBiting()
         {
-            Debug.Log("Event Triggered");
-            isCatchable = true;
-            CatchableTime.Start();
+            Debug.Log("Fish is baiting!");
         }
 
-        void OnCatchTimerEnd(object obj, ElapsedEventArgs eventArgs)
+        void CatchFailed()
         {
-            CatchableTime.Stop();
-            Debug.Log("Missed Catching");
-            isCatchable = false;
+            Debug.Log("You missed the catch!");
         }
 
+        private void AttemptCatch()
+        {
+            
+        }
     }
 }

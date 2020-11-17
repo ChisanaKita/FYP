@@ -14,10 +14,15 @@ namespace VRF
         Catch
     }
 
-    public enum FishType
+    public enum FishSize
     {
         Mini = 1,
         Midium,
         Large
+    }
+
+    public enum FishType
+    {
+        TestFish
     }
 }
