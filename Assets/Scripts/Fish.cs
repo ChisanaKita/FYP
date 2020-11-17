@@ -44,9 +44,9 @@ namespace VRF
 
             IsCatched = false;
             IsBaiting = false;
-            IsBaitPresent = true;
+            IsBaitPresent = false;
             IsTurning = false;
-            Ismoving = true;
+            Ismoving = false;
             IsCoroutineRunning = false;
 
             Name = Enum.GetName(typeof(FishType), SRandom.Instance.GetRandom(0, Enum.GetNames(typeof(FishType)).Length - 1));
