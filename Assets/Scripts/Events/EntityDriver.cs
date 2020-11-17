@@ -9,14 +9,22 @@ namespace VRF.Driver
     {
         private EntityDriver(){}
 
-        //Events
+        #region Events
+        //Player Events
         internal event Action FishBiting;
         internal event Action FishBiteEnd;
+
+        //Both
+        internal event Action Catched;
+        
+        //Fishs events
+        internal event Action BaitEntered;
+        #endregion
+
 
         #region PlayerEvent
         public void OnFishBiting()
         {
-            Debug.Log("publishing event");
             FishBiting?.Invoke();
         }
         public void OnFishReleasedBite()
@@ -25,8 +33,16 @@ namespace VRF.Driver
         }
         #endregion
 
-        #region FishEvent
+        public void OnCatched()
+        {
+            Catched?.Invoke();
+        }
 
+        #region FishEvent
+        public void OnBaitEntered()
+        {
+            BaitEntered?.Invoke();
+        }
         #endregion
     }
 }
