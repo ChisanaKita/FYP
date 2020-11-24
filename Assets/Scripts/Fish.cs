@@ -10,7 +10,7 @@ namespace VRF
     {
         public override FishSize Size => (FishSize)SRandom.Instance.GetRandom(1, Enum.GetNames(typeof(FishSize)).Length - 1);
 
-        private readonly float CONS_ROTATION_SPEED = 30;
+        private readonly float CONS_ROTATION_SPEED = 100;
 
         public bool IsBaiting { get; set; }
         public bool IsCatched { get; set; }
@@ -44,9 +44,9 @@ namespace VRF
 
             IsCatched = false;
             IsBaiting = false;
-            IsBaitPresent = false;
+            IsBaitPresent = true;
             IsTurning = false;
-            Ismoving = false;
+            Ismoving = true;
             IsCoroutineRunning = false;
 
             Name = Enum.GetName(typeof(FishType), SRandom.Instance.GetRandom(0, Enum.GetNames(typeof(FishType)).Length - 1));
@@ -112,6 +112,11 @@ namespace VRF
                     transform.SetParent(other.transform);
                 }
             }
+            if (other.tag == "Test")
+            {
+                Ismoving = true;
+            }
+            Debug.Log("Now entered teiger : " + other.tag);
         }
         
         public override void OnTriggerExit(Collider other)
@@ -127,6 +132,10 @@ namespace VRF
                 {
                     return;
                 }
+            }
+            if (other.tag == "Test")
+            {
+                Ismoving = false;
             }
         }
 
