@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Water
   - Test
+  - FishArea
   layers:
   - Default
   - TransparentFX

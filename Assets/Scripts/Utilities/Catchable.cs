@@ -9,13 +9,17 @@ namespace VRF.Util
 
         public abstract FishSize Size { get; }
 
+        protected bool IsBaiting { get; set; }
+
         private void OnDestroy()
         {
-              CatchTimer.Dispose();
+            CatchTimer.Elapsed -= OnTimesUp;
+            CatchTimer.Dispose();
         }
         private void Awake()
         {
             CatchTimer = new Timer();
+            CatchTimer.Elapsed += OnTimesUp;
         }
 
         protected void StartCatchTimer(int Interval)
@@ -26,6 +30,7 @@ namespace VRF.Util
             }
             else
             {
+                IsBaiting = true;
                 CatchTimer.Enabled = true;
                 Debug.Log("Fish Catch-Timer Started Counting.");
                 CatchTimer.Interval = (int)Size * Interval;
@@ -41,6 +46,7 @@ namespace VRF.Util
 
         private void OnTimesUp(object obj, ElapsedEventArgs eventArgs)
         {
+            IsBaiting = false;
             StopCatchTimer();
             transform.parent = null;
             Debug.Log("Catch-Timer Time-Up!");

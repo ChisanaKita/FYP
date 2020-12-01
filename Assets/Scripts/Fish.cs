@@ -8,21 +8,25 @@ namespace VRF
 {
     public class Fish : Catchable, IFish
     {
+        //Base Class
         public override FishSize Size => (FishSize)SRandom.Instance.GetRandom(1, Enum.GetNames(typeof(FishSize)).Length - 1);
 
+        //Constant
         private readonly float CONS_ROTATION_SPEED = 100;
 
-        public bool IsBaiting { get; set; }
+        //IFish
         public bool IsCatched { get; set; }
         public int CatchThreshold { get; set; }
         public string Name { get; set; }
 
+        //Private Prop
         private bool IsBaitPresent { get; set;}
         private bool IsTurning { get; set; }
         private bool Ismoving { get; set; }
-        public bool IsCoroutineRunning { get; set; }
+        private bool IsCoroutineRunning { get; set; }
         private Vector3 TargetAngleVector;
-        private Rigidbody m_rigidbody;
+        private Rigidbody MyRigidbody;
+        private Animator MyAnimator;
 
         #region Event_Handling
         private void Awake()
@@ -46,15 +50,16 @@ namespace VRF
             IsBaiting = false;
             IsBaitPresent = true;
             IsTurning = false;
-            Ismoving = true;
+            Ismoving = false;
             IsCoroutineRunning = false;
 
             Name = Enum.GetName(typeof(FishType), SRandom.Instance.GetRandom(0, Enum.GetNames(typeof(FishType)).Length - 1));
 
-            TargetAngleVector = GetRandomVector3();
+            TargetAngleVector = GetRandomVectorY();
             transform.localEulerAngles = TargetAngleVector;
 
-            m_rigidbody = GetComponent<Rigidbody>();
+            MyRigidbody = GetComponent<Rigidbody>();
+            MyAnimator = GetComponent<Animator>();
 
             Debug.LogFormat("Fish tpye : {0}, Name : {1}", Size, Name);
         }
@@ -89,12 +94,12 @@ namespace VRF
                 //Move
                 if (Ismoving)
                 {
-                    m_rigidbody.velocity = transform.forward * 1;
+                    MyRigidbody.velocity = transform.forward * 1;
                 }
             }
         }
 
-        Vector3 GetRandomVector3()
+        Vector3 GetRandomVectorY()
         {
             return new Vector3(0, SRandom.Instance.GetRandom(0, 360), 0);
         }
@@ -105,16 +110,20 @@ namespace VRF
             {
                 if (other.tag == "Bait")
                 {
+                    //Debug Message
                     base.OnTriggerEnter(other);
+
+                    ChangeMovingStatus(false);
                     EntityDriver.Instance.OnFishBiting();
-                    IsBaiting = true;
                     StartCatchTimer((int)Size);
+                    MyRigidbody.velocity = Vector3.zero;
                     transform.SetParent(other.transform);
                 }
             }
-            if (other.tag == "Test")
+
+            if (other.tag == "FishArea")
             {
-                Ismoving = true;
+                ChangeMovingStatus(true);
             }
             Debug.Log("Now entered teiger : " + other.tag);
         }
@@ -133,9 +142,9 @@ namespace VRF
                     return;
                 }
             }
-            if (other.tag == "Test")
+            if (other.tag == "FishArea")
             {
-                Ismoving = false;
+                ChangeMovingStatus(false);
             }
         }
 
@@ -150,6 +159,12 @@ namespace VRF
             IsBaitPresent = true;
         }
 
+        private void ChangeMovingStatus(bool isMoving)
+        {
+            Ismoving = isMoving;
+            MyAnimator.SetBool("IsMoving", isMoving);
+        }
+
         private IEnumerator AttemptToTurn()
         {
             IsCoroutineRunning = true;
@@ -157,7 +172,7 @@ namespace VRF
             if ((SRandom.Instance.GetRandom(0, 20) % 2) == 0)
             {
                 IsTurning = true;
-                TargetAngleVector = GetRandomVector3();
+                TargetAngleVector = GetRandomVectorY();
                 Debug.Log("Truning Vector : " + TargetAngleVector.y);
             }
             IsCoroutineRunning = false;
