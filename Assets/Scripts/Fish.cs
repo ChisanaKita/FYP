@@ -3,13 +3,14 @@ using VRF.Driver;
 using VRF.Util;
 using System;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 namespace VRF
 {
     public class Fish : Catchable, IFish
     {
         //Base Class
-        public override FishSize Size => (FishSize)SRandom.Instance.GetRandom(1, Enum.GetNames(typeof(FishSize)).Length - 1);
+        public override FishSize Size => (FishSize)Random.Range(1, Enum.GetNames(typeof(FishSize)).Length - 1);
 
         //Constant
         private readonly float CONS_ROTATION_SPEED = 100;
@@ -31,14 +32,14 @@ namespace VRF
         #region Event_Handling
         private void Awake()
         {
-            EntityDriver.Instance.Catched += Catched;
-            EntityDriver.Instance.BaitEntered += BaitEntered;
+            EntityDriver.Instance.OnCatched += Catched;
+            EntityDriver.Instance.OnBaitEntered += BaitEntered;
         }
 
         private void OnDestroy()
         {
-            EntityDriver.Instance.Catched -= Catched;
-            EntityDriver.Instance.BaitEntered -= BaitEntered;
+            EntityDriver.Instance.OnCatched -= Catched;
+            EntityDriver.Instance.OnBaitEntered -= BaitEntered;
         }
         #endregion
 
@@ -48,12 +49,12 @@ namespace VRF
 
             IsCatched = false;
             IsBaiting = false;
-            IsBaitPresent = true;
+            IsBaitPresent = false;
             IsTurning = false;
             Ismoving = false;
             IsCoroutineRunning = false;
 
-            Name = Enum.GetName(typeof(FishType), SRandom.Instance.GetRandom(0, Enum.GetNames(typeof(FishType)).Length - 1));
+            Name = Enum.GetName(typeof(FishType), Random.Range(0, Enum.GetNames(typeof(FishType)).Length - 1));
 
             TargetAngleVector = GetRandomVectorY();
             transform.localEulerAngles = TargetAngleVector;
@@ -101,7 +102,7 @@ namespace VRF
 
         Vector3 GetRandomVectorY()
         {
-            return new Vector3(0, SRandom.Instance.GetRandom(0, 360), 0);
+            return new Vector3(0, Random.Range(0, 360), 0);
         }
 
         public override void OnTriggerEnter(Collider other)
@@ -114,7 +115,7 @@ namespace VRF
                     base.OnTriggerEnter(other);
 
                     ChangeMovingStatus(false);
-                    EntityDriver.Instance.OnFishBiting();
+                    EntityDriver.Instance.TriggerFishBiting();
                     StartCatchTimer((int)Size);
                     MyRigidbody.velocity = Vector3.zero;
                     transform.SetParent(other.transform);
@@ -135,7 +136,7 @@ namespace VRF
                 if (IsBaiting)
                 {
                     base.OnTriggerExit(other);
-                    EntityDriver.Instance.OnCatched();
+                    EntityDriver.Instance.TriggerCatched();
                 }
                 else
                 {
@@ -169,7 +170,7 @@ namespace VRF
         {
             IsCoroutineRunning = true;
             yield return new WaitForSeconds(5);
-            if ((SRandom.Instance.GetRandom(0, 20) % 2) == 0)
+            if ((Random.Range(0, 20) % 2) == 0)
             {
                 IsTurning = true;
                 TargetAngleVector = GetRandomVectorY();

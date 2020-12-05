@@ -9,8 +9,8 @@ namespace VRF
         // Start is called before the first frame update
         void Start()
         {
-            EntityDriver.Instance.FishBiting += FishBiting;
-            EntityDriver.Instance.FishBiteEnd += CatchFailed;
+            EntityDriver.Instance.OnFishBiting += FishBiting;
+            EntityDriver.Instance.OnFishBiteEnd += CatchFailed;
         }
 
         // Update is called once per frame

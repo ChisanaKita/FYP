@@ -11,37 +11,37 @@ namespace VRF.Driver
 
         #region Events
         //Player Events
-        internal event Action FishBiting;
-        internal event Action FishBiteEnd;
+        internal event Action OnFishBiting;
+        internal event Action OnFishBiteEnd;
 
         //Both
-        internal event Action Catched;
+        internal event Action OnCatched;
         
         //Fishs events
-        internal event Action BaitEntered;
+        internal event Action OnBaitEntered;
         #endregion
 
 
         #region PlayerEvent
-        public void OnFishBiting()
+        public void TriggerFishBiting()
         {
-            FishBiting?.Invoke();
+            OnFishBiting?.Invoke();
         }
-        public void OnFishReleasedBite()
+        public void TriggerFishReleasedBite()
         {
-            FishBiteEnd?.Invoke();
+            OnFishBiteEnd?.Invoke();
         }
         #endregion
 
-        public void OnCatched()
+        public void TriggerCatched()
         {
-            Catched?.Invoke();
+            OnCatched?.Invoke();
         }
 
         #region FishEvent
-        public void OnBaitEntered()
+        public void TriggerBaitEntered()
         {
-            BaitEntered?.Invoke();
+            OnBaitEntered?.Invoke();
         }
         #endregion
     }
