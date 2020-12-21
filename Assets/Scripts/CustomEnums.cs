@@ -25,4 +25,9 @@ namespace VRF
     {
         TestFish
     }
+
+    public enum BaitType
+    {
+        TestBait
+    }
 }

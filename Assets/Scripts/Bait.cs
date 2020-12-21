@@ -8,9 +8,10 @@ namespace VRF
     public class Bait : MonoBehaviour
     {
 
-        private bool IsEnteredWater { get; set; }
         public bool IsCoroutineRunning { get; set; }
+        public BaitType MyBaitType { get; set; }
 
+        private bool IsEnteredWater { get; set; }
         private Rigidbody MyRigidbody;
 
         #region Event_Handling
@@ -29,13 +30,18 @@ namespace VRF
         {
             IsEnteredWater = IsCoroutineRunning = false;
             MyRigidbody = GetComponent<Rigidbody>();
+            MyBaitType = BaitType.TestBait;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (IsEnteredWater)
             {
-                MyRigidbody.AddForce(-transform.up * (MyRigidbody.velocity.y - Random.Range(-1f, 2.25f)), ForceMode.Force);
+                MyRigidbody.AddForce(Vector3.up * (Mathf.Abs(Physics.gravity.y) + Random.Range(-1f, 1f)), ForceMode.Force);
+                if (transform.position.y < 1.5f)
+                {
+                    MyRigidbody.AddForce(Vector3.up * Random.Range(2f, 4f));
+                }
             }
         }
 
