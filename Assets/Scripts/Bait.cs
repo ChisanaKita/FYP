@@ -37,7 +37,8 @@ namespace VRF
         {
             if (IsEnteredWater)
             {
-                MyRigidbody.AddForce(Vector3.up * (Mathf.Abs(Physics.gravity.y) + Random.Range(-1f, 1f)), ForceMode.Force);
+                MyRigidbody.AddForce(Vector3.up * ((Mathf.Abs(Physics.gravity.y) + Random.Range(-1f, 1f)) * MyRigidbody.mass), ForceMode.Force);
+
                 if (transform.position.y < 1.5f)
                 {
                     MyRigidbody.AddForce(Vector3.up * Random.Range(2f, 4f));
