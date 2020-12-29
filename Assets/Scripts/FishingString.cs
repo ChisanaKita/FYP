@@ -8,18 +8,24 @@ namespace VRF
 {
     public class FishingString : MonoBehaviour
     {
-        private readonly Vector3 LINE_STARTING_POINT = new Vector3(4.5f, 0f, 4.5f);
+        private readonly Vector3 LINE_STARTING_POINT = new Vector3(0f, 0f, 20.65f);
+        private readonly Vector3 G_Force = new Vector3(0f, -0.05f, 0);
 
         private LineRenderer _LineRanderer;
         private List<LineSegment> _LineSegments;
-        private float _LineSegmentLengthOffset;
-        private float _SegmentsLength;
-        private Transform _Reel;
-        private Transform _SeondConstraint;
 
+        private Vector3 _LineSegmentLengthOffset;
+        private float _SegmentsLength;
         private float _LineWidth;
 
+        private Transform _Reel;
+        private Transform _SecondConstraint;
+
+        private Transform _Bait;
+
         private bool IsReelTurned;
+        private bool IsCoroutineRunning;
+        
 
 
         // Start is called before the first frame update
@@ -27,14 +33,19 @@ namespace VRF
         {
             _LineRanderer = GetComponent<LineRenderer>();
             _LineSegments = new List<LineSegment>();
-            _LineSegmentLengthOffset = 1.1f;
-            _SegmentsLength = 0.25f;
             _LineSegments.Add(new LineSegment(Vector3.zero));
             _LineSegments.Add(new LineSegment(LINE_STARTING_POINT));
+
+            _LineSegmentLengthOffset = new Vector3(0, 0.25f, 0);
+            _SegmentsLength = 0.25f;
             _LineWidth = 0.015f;
+
             _Reel = GameObject.FindGameObjectWithTag("Reel").transform;
-            _SeondConstraint = transform.parent.Find("SeondConstraint");
+            _SecondConstraint = transform.parent.Find("SecondConstraint");
+            _Bait = GameObject.FindGameObjectWithTag("Bait").transform;
+
             IsReelTurned = false;
+            IsCoroutineRunning = false;
         }
 
         // Update is called once per frame
@@ -42,9 +53,45 @@ namespace VRF
         {
             DrawLines();
 
+            //Down Fish Line
             if (Input.GetKeyUp(KeyCode.DownArrow))
             {
-                _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow * _LineSegmentLengthOffset));
+                _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+            }
+
+            //Up Fish Line
+            if (Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                if (_LineSegments.Count > 2)
+                {
+                    _LineSegments.RemoveAt(_LineSegments.Count - 1);
+                }
+            }
+
+            //Clamp The Bait
+            if (Input.GetKey(KeyCode.Space))
+            {
+                _Bait.position = _LineSegments.Last().posNow;
+            }
+
+            //If line segments is greater than 2 :
+            if (_LineSegments.Count > 2)
+            {
+                //Plus, If the magnitude of the vector between the bait and the last segment is greater than 0.25 :
+                if ((_LineSegments.Last().posNow - _Bait.position).magnitude > 0.25f)
+                {
+                    //Add a new segment to the list.
+                    _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+                }
+                //Let the last segment follow the bait.
+                LineSegment _LastSeg = _LineSegments.Last();
+                _LastSeg.posNow = _Bait.position;
+                _LineSegments[_LineSegments.Count - 1] = _LastSeg;
+            }
+            else //If the line segments is less than 2 :
+            {
+                //The bait follows the last line segment's position.
+                _Bait.position = _LineSegments.Last().posNow;
             }
         }
 
@@ -64,8 +111,6 @@ namespace VRF
 
         private void SimulateLine()
         {
-            Vector3 G_Force = new Vector3(0f, -0.25f, 0);
-
             for (int i = 2; i < _LineSegments.Count; i++)
             {
                 LineSegment firstSegment = _LineSegments[i];
@@ -84,14 +129,17 @@ namespace VRF
 
         private void Constraint()
         {
+            //The first line point always is the Reel's position.
             LineSegment firstSegment = _LineSegments[0];
             firstSegment.posNow = _Reel.position;
             _LineSegments[0] = firstSegment;
 
+            //The second line is always from the reel to the tip of the fishing rod.
             LineSegment secondSegment = _LineSegments[1];
-            secondSegment.posNow = _SeondConstraint.position;
+            secondSegment.posNow = _SecondConstraint.position;
             _LineSegments[1] = secondSegment;
 
+            //Applying Non-sence.
             for (int i = 1; i < _LineSegments.Count - 1; i++)
             {
                 LineSegment firstSeg = _LineSegments[i];
@@ -115,7 +163,6 @@ namespace VRF
                     secondSeg.posNow += changeAmount;
                     _LineSegments[i + 1] = secondSeg;
                 }
-
             }
         }
 
@@ -125,8 +172,8 @@ namespace VRF
             public Vector3 posOld;
             public LineSegment(Vector3 pos)
             {
-                this.posNow = pos;
-                this.posOld = pos;
+                posNow = pos;
+                posOld = pos;
             }
         }
     }
