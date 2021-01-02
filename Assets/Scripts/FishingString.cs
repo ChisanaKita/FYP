@@ -3,13 +3,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using VRF.Driver;
 
 namespace VRF
 {
     public class FishingString : MonoBehaviour
     {
         private readonly Vector3 LINE_STARTING_POINT = new Vector3(0f, 0f, 20.65f);
-        private readonly Vector3 G_Force = new Vector3(0f, -0.05f, 0);
+        private readonly Vector3 G_Force = new Vector3(0f, -0.01f, 0);
 
         private LineRenderer _LineRanderer;
         private List<LineSegment> _LineSegments;
@@ -23,10 +24,48 @@ namespace VRF
 
         private Transform _Bait;
 
-        private bool IsReelTurned;
-        private bool IsCoroutineRunning;
-        
+        private bool IsReelHold;
 
+        #region EVENT_HANDLER
+        private void Awake()
+        {
+            EntityDriver.Instance.OnReelDown += ReelDown;
+            EntityDriver.Instance.OnReelUp += ReelUp;
+            EntityDriver.Instance.OnReelHold += ReelHold;
+            EntityDriver.Instance.OnReelHoldRelease += ReelHoldRelease;
+        }
+        private void OnDestroy()
+        {
+            EntityDriver.Instance.OnReelDown -= ReelDown;
+            EntityDriver.Instance.OnReelUp -= ReelUp;
+            EntityDriver.Instance.OnReelHold -= ReelHold;
+            EntityDriver.Instance.OnReelHoldRelease -= ReelHoldRelease;
+        }
+
+        private void ReelUp()
+        {
+            if (_LineSegments.Count > 2)
+            {
+                _LineSegments.RemoveAt(_LineSegments.Count - 1);
+            }
+        }
+
+        private void ReelDown()
+        {
+            _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+        }
+
+        private void ReelHold()
+        {
+            IsReelHold = true;
+        }
+
+        private void ReelHoldRelease()
+        {
+            IsReelHold = false;
+        }
+
+        #endregion
 
         // Start is called before the first frame update
         void Start()
@@ -44,8 +83,7 @@ namespace VRF
             _SecondConstraint = transform.parent.Find("SecondConstraint");
             _Bait = GameObject.FindGameObjectWithTag("Bait").transform;
 
-            IsReelTurned = false;
-            IsCoroutineRunning = false;
+            IsReelHold = false;
         }
 
         // Update is called once per frame
@@ -53,25 +91,29 @@ namespace VRF
         {
             DrawLines();
 
+            #region TESTING
             //Down Fish Line
             if (Input.GetKeyUp(KeyCode.DownArrow))
             {
-                _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+                ReelUp();
             }
 
             //Up Fish Line
             if (Input.GetKeyUp(KeyCode.UpArrow))
             {
-                if (_LineSegments.Count > 2)
-                {
-                    _LineSegments.RemoveAt(_LineSegments.Count - 1);
-                }
+                ReelDown();
             }
 
             //Clamp The Bait
             if (Input.GetKey(KeyCode.Space))
             {
                 _Bait.position = _LineSegments.Last().posNow;
+            }
+            #endregion
+
+            if (IsReelHold)
+            {
+
             }
 
             //If line segments is greater than 2 :
