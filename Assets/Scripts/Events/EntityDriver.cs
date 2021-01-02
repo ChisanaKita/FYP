@@ -13,10 +13,6 @@ namespace VRF.Driver
         //Player Events
         internal event Action OnFishBiting;
         internal event Action OnFishBiteEnd;
-        internal event Action OnReelDown;
-        internal event Action OnReelUp;
-        internal event Action OnReelHold;
-        internal event Action OnReelHoldRelease;
 
         //Both
         internal event Action OnCatched;
@@ -34,22 +30,6 @@ namespace VRF.Driver
         public void TriggerFishReleasedBite()
         {
             OnFishBiteEnd?.Invoke();
-        }
-        public void TriggerReelUp()
-        {
-            OnReelUp?.Invoke();
-        }
-        public void TriggerReelDown()
-        {
-            OnReelDown?.Invoke();
-        }
-        public void TriggerReelHold()
-        {
-            OnReelHold?.Invoke();
-        }
-        public void TriggerReelHoldRelease()
-        {
-            OnReelHoldRelease?.Invoke();
         }
         #endregion
 

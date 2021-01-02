@@ -12,9 +12,7 @@ namespace VRF
         public BaitType MyBaitType { get; set; }
 
         private bool IsEnteredWater { get; set; }
-        private Rigidbody _Rigidbody;
-
-        private float DEBUG_PeekVelocity = 0;
+        private Rigidbody MyRigidbody;
 
         #region Event_Handling
         private void Awake()
@@ -24,34 +22,26 @@ namespace VRF
 
         private void OnDestroy()
         {
-            Debug.Log(DEBUG_PeekVelocity);
+
         }
         #endregion
 
         private void Start()
         {
             IsEnteredWater = IsCoroutineRunning = false;
-            _Rigidbody = GetComponent<Rigidbody>();
+            MyRigidbody = GetComponent<Rigidbody>();
             MyBaitType = BaitType.TestBait;
-        }
-
-        private void Update()
-        {
-            if (_Rigidbody.velocity.magnitude > DEBUG_PeekVelocity)
-            {
-                DEBUG_PeekVelocity = _Rigidbody.velocity.magnitude;
-            }
         }
 
         private void FixedUpdate()
         {
             if (IsEnteredWater)
             {
-                _Rigidbody.AddForce(Vector3.up * ((Mathf.Abs(Physics.gravity.y) + Random.Range(-1f, 1f)) * _Rigidbody.mass), ForceMode.Force);
+                MyRigidbody.AddForce(Vector3.up * ((Mathf.Abs(Physics.gravity.y) + Random.Range(-1f, 1f)) * MyRigidbody.mass), ForceMode.Force);
 
                 if (transform.position.y < 1.5f)
                 {
-                    _Rigidbody.AddForce(Vector3.up * Random.Range(2f, 4f));
+                    MyRigidbody.AddForce(Vector3.up * Random.Range(2f, 4f));
                 }
             }
         }
