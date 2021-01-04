@@ -8,6 +8,7 @@ TagManager:
   - FishArea
   - Reel
   - Bait
+  - Handle
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Hand
   - Grabbable
-  - 
+  - Interactable
   - 
   - 
   - 
