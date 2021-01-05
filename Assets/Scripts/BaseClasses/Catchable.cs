@@ -9,27 +9,25 @@ namespace VRF.Util
 
         public abstract FishSize Size { get; }
 
-        protected bool IsBaiting { get; set; }
+        public abstract float SpawnHeight { get; }
 
-        private void OnDestroy()
-        {
-            CatchTimer.Elapsed -= OnTimesUp;
-            CatchTimer.Dispose();
-        }
-        private void Awake()
-        {
-            CatchTimer = new Timer();
-            CatchTimer.Elapsed += OnTimesUp;
-        }
+        protected bool IsBaiting { get; set; }
 
         protected void StartCatchTimer(int Interval)
         {
+            if (CatchTimer == null)
+            {
+                CatchTimer = new Timer();
+                CatchTimer.Elapsed += OnTimesUp;
+                CatchTimer.Enabled = false;
+            }
             if (CatchTimer.Enabled)
             {
                 return;
             }
             else
             {
+                Debug.Log("2");
                 IsBaiting = true;
                 CatchTimer.Enabled = true;
                 Debug.Log("Fish Catch-Timer Started Counting.");
@@ -48,8 +46,17 @@ namespace VRF.Util
         {
             IsBaiting = false;
             StopCatchTimer();
-            transform.parent = null;
+            transform.position.Set(transform.position.x, SpawnHeight, transform.position.z);
             Debug.Log("Catch-Timer Time-Up!");
+        }
+
+        protected void DisposeTimer()
+        {
+            if (CatchTimer != null)
+            {
+                CatchTimer.Elapsed -= OnTimesUp;
+                CatchTimer.Dispose();
+            }
         }
 
         //Fishing Rod

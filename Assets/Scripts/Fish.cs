@@ -11,35 +11,43 @@ namespace VRF
     {
         //Base Class
         public override FishSize Size => (FishSize)Random.Range(1, Enum.GetNames(typeof(FishSize)).Length - 1);
+        public override float SpawnHeight => transform.position.y;
 
         //Constant
         private readonly float CONS_ROTATION_SPEED = 100;
+
+        
 
         //IFish
         public bool IsCatched { get; set; }
         public int CatchThreshold { get; set; }
         public string Name { get; set; }
 
+        public bool IsOver { get; set; }
+        public Rigidbody _Mouth;
+        public Rigidbody _Rigidbody;
+
         //Private Prop
         private bool IsBaitPresent { get; set;}
+        private bool IsCoroutineRunning { get; set; }
         private bool IsTurning { get; set; }
         private bool Ismoving { get; set; }
-        private bool IsCoroutineRunning { get; set; }
+
         private Vector3 TargetAngleVector;
-        private Rigidbody MyRigidbody;
-        private Animator MyAnimator;
+        private Animator _Animator;
+
+        private GameObject _Bait;
 
         #region Event_Handling
         private void Awake()
         {
-            EntityDriver.Instance.OnCatched += Catched;
             EntityDriver.Instance.OnBaitEntered += BaitEntered;
         }
 
         private void OnDestroy()
         {
-            EntityDriver.Instance.OnCatched -= Catched;
             EntityDriver.Instance.OnBaitEntered -= BaitEntered;
+            base.DisposeTimer();
         }
         #endregion
 
@@ -59,8 +67,7 @@ namespace VRF
             TargetAngleVector = GetRandomVectorY();
             transform.localEulerAngles = TargetAngleVector;
 
-            MyRigidbody = GetComponent<Rigidbody>();
-            MyAnimator = GetComponent<Animator>();
+            _Animator = GetComponent<Animator>();
 
             Debug.LogFormat("Fish tpye : {0}, Name : {1}", Size, Name);
         }
@@ -68,7 +75,7 @@ namespace VRF
         // Update is called once per frame
         void Update()
         {
-            if (IsBaitPresent)
+            if (!IsCatched && !IsBaiting)
             {
                 //Turn
                 if (IsTurning)
@@ -95,8 +102,20 @@ namespace VRF
                 //Move
                 if (Ismoving)
                 {
-                    MyRigidbody.velocity = transform.forward * 1;
+                    _Mouth.velocity = transform.forward * 1;
                 }
+            }
+            else
+            {
+                Debug.Log("3");
+            }
+        }
+
+        void FixedUpdate()
+        {
+            if (IsBaiting || IsCatched)
+            {
+                _Mouth.MovePosition(_Bait.transform.position);
             }
         }
 
@@ -113,20 +132,21 @@ namespace VRF
                 {
                     //Debug Message
                     base.OnTriggerEnter(other);
-
+                    Debug.Log("1");
                     ChangeMovingStatus(false);
+                    StopCoroutine(AttemptToTurn());
                     EntityDriver.Instance.TriggerFishBiting();
-                    StartCatchTimer((int)Size);
-                    MyRigidbody.velocity = Vector3.zero;
-                    transform.SetParent(other.transform);
+                    StartCatchTimer(5000);
+                    _Mouth.velocity = Vector3.zero;
+                    _Bait = other.gameObject;
                 }
             }
 
             if (other.tag == "FishArea")
             {
-                ChangeMovingStatus(true);
+                //ChangeMovingStatus(true);
             }
-            Debug.Log("Now entered teiger : " + other.tag);
+            Debug.Log("Now entered triger : " + other.tag);
         }
         
         public override void OnTriggerExit(Collider other)
@@ -136,13 +156,10 @@ namespace VRF
                 if (IsBaiting)
                 {
                     base.OnTriggerExit(other);
-                    EntityDriver.Instance.TriggerCatched();
-                }
-                else
-                {
-                    return;
+                    Catched();
                 }
             }
+
             if (other.tag == "FishArea")
             {
                 ChangeMovingStatus(false);
@@ -152,7 +169,13 @@ namespace VRF
         private void Catched()
         {
             IsCatched = true;
+            base.StopCatchTimer();
             IsBaiting = false;
+            ChangeMovingStatus(false);
+            StopAllCoroutines();
+            IsTurning = false;
+            _Rigidbody.useGravity = true;
+            _Animator.SetBool("IsMoving", true);
         }
 
         private void BaitEntered()
@@ -163,7 +186,7 @@ namespace VRF
         private void ChangeMovingStatus(bool isMoving)
         {
             Ismoving = isMoving;
-            MyAnimator.SetBool("IsMoving", isMoving);
+            _Animator.SetBool("IsMoving", isMoving);
         }
 
         private IEnumerator AttemptToTurn()

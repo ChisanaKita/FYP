@@ -10,7 +10,7 @@ namespace VRF
     public class FishingString : MonoBehaviour
     {
         //private readonly Vector3 LINE_STARTING_POINT = new Vector3(0f, 0f, 20.65f);
-        private readonly Vector3 G_Force = new Vector3(0f, -0.01f, 0);
+        private readonly Vector3 G_Force = new Vector3(0f, -0.1f, 0);
 
         private LineRenderer _LineRanderer;
         private List<LineSegment> _LineSegments;
@@ -23,9 +23,10 @@ namespace VRF
         private Transform _SecondConstraint;
         private Transform _ThirdConstraint;
 
-        private Transform _Bait;
+        private Rigidbody _Bait;
 
         private bool IsReelHold;
+        private bool IsBaitInWater;
 
         #region EVENT_HANDLER
         private void Awake()
@@ -34,6 +35,8 @@ namespace VRF
             EntityDriver.Instance.OnReelUp += ReelUp;
             EntityDriver.Instance.OnReelHold += ReelHold;
             EntityDriver.Instance.OnReelHoldRelease += ReelHoldRelease;
+            EntityDriver.Instance.OnBaitEntered += BaitEnter;
+            EntityDriver.Instance.OnBaitExited += BaitExit;
         }
         private void OnDestroy()
         {
@@ -41,13 +44,16 @@ namespace VRF
             EntityDriver.Instance.OnReelUp -= ReelUp;
             EntityDriver.Instance.OnReelHold -= ReelHold;
             EntityDriver.Instance.OnReelHoldRelease -= ReelHoldRelease;
+            EntityDriver.Instance.OnBaitEntered -= BaitEnter;
+            EntityDriver.Instance.OnBaitExited -= BaitExit;
         }
 
         private void ReelUp()
         {
-            if (_LineSegments.Count > 2)
+            if (_LineSegments.Count > 3)
             {
                 _LineSegments.RemoveAt(_LineSegments.Count - 1);
+                _Bait.MovePosition(_LineSegments.Last().posNow);
             }
         }
 
@@ -64,6 +70,17 @@ namespace VRF
         private void ReelHoldRelease()
         {
             IsReelHold = false;
+            _Bait.velocity = _LineSegments.Last().posNow - _LineSegments.Last().posOld;
+        }
+
+        private void BaitEnter()
+        {
+            IsBaitInWater = true;
+        }
+
+        private void BaitExit()
+        {
+            IsBaitInWater = false;
         }
 
         #endregion
@@ -84,9 +101,10 @@ namespace VRF
             _Reel = GameObject.FindGameObjectWithTag("Reel").transform;
             _SecondConstraint = transform.parent.Find("SecondConstraint");
             _ThirdConstraint = transform.parent.Find("ThirdConstraint");
-            _Bait = GameObject.FindGameObjectWithTag("Bait").transform;
+            _Bait = GameObject.FindGameObjectWithTag("Bait").GetComponent<Rigidbody>();
 
-            IsReelHold = false;
+            IsReelHold = true;
+            IsBaitInWater = false;
         }
 
         // Update is called once per frame
@@ -98,45 +116,72 @@ namespace VRF
             //Down Fish Line
             if (Input.GetKeyUp(KeyCode.DownArrow))
             {
-                ReelUp();
+                ReelDown();
             }
 
             //Up Fish Line
             if (Input.GetKeyUp(KeyCode.UpArrow))
             {
-                ReelDown();
+                ReelUp();
             }
 
             //Clamp The Bait
             if (Input.GetKey(KeyCode.Space))
             {
-                _Bait.position = _LineSegments.Last().posNow;
+                ReelHoldRelease();
             }
             #endregion
 
-            if (IsReelHold)
+            if (_LineSegments.Count > 3)
             {
 
-            }
-
-            //If line segments is greater than 2 :
-            if (_LineSegments.Count > 2)
-            {
-                //Plus, If the magnitude of the vector between the bait and the last segment is greater than 0.25 :
-                if ((_LineSegments.Last().posNow - _Bait.position).magnitude > 0.25f)
+                if (IsReelHold)
                 {
-                    //Add a new segment to the list.
-                    _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+                    _Bait.useGravity = false;
+                    _Bait.MovePosition(_LineSegments.Last().posNow);
                 }
-                //Let the last segment follow the bait.
-                LineSegment _LastSeg = _LineSegments.Last();
-                _LastSeg.posNow = _Bait.position;
-                _LineSegments[_LineSegments.Count - 1] = _LastSeg;
+                else
+                {
+                    _Bait.useGravity = true;
+                    
+                    float error = (_LineSegments.Last().posNow - _Bait.position).magnitude;
+                    Debug.Log("Error : " + error);
+
+                    if (!IsBaitInWater)
+                    {
+                        _Bait.MovePosition(_LineSegments.Last().posNow);
+                        //_Bait.useGravity = false;
+                        if (_LineSegments.Count < 25 && error > 0.8f)
+                        {
+                            _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+                        }
+                    }
+                    else
+                    {
+                        if (error > 0.05f && error < 0.08f)
+                        {
+                            _Bait.MovePosition(_LineSegments.Last().posNow);
+                        }
+                    }
+
+                    LineSegment _LastSeg = _LineSegments.Last();
+                    _LastSeg.posNow = _Bait.position;
+                    _LineSegments[_LineSegments.Count - 1] = _LastSeg;
+                    
+
+                    
+                    /*
+                    if (error > 0.80f)
+                    {
+                        _Bait.velocity = _LineSegments.Last().posNow - _LineSegments.Last().posOld;
+                    }
+                    */
+                }
             }
-            else //If the line segments is less than 2 :
+            else
             {
-                //The bait follows the last line segment's position.
-                _Bait.position = _LineSegments.Last().posNow;
+                _Bait.useGravity = false;
+                _Bait.MovePosition(_ThirdConstraint.position);
             }
         }
 
@@ -166,13 +211,10 @@ namespace VRF
                 _LineSegments[i] = firstSegment;
             }
 
-            if (_LineSegments.Count > 3)
-            {
                 for (int i = 0; i < 50; i++)
                 {
                     Constraint();
                 }
-            }
         }
 
         private void Constraint()
@@ -188,9 +230,9 @@ namespace VRF
             _LineSegments[1] = secondSegment;
 
             //The third line is always from the reel to the tip of the fishing rod.
-            LineSegment thirdSegment = _LineSegments[1];
+            LineSegment thirdSegment = _LineSegments[2];
             thirdSegment.posNow = _ThirdConstraint.position;
-            _LineSegments[1] = thirdSegment;
+            _LineSegments[2] = thirdSegment;
 
             //Applying Non-sence.
             for (int i = 2; i < _LineSegments.Count - 1; i++)

@@ -23,6 +23,7 @@ namespace VRF.Driver
         
         //Fishs events
         internal event Action OnBaitEntered;
+        internal event Action OnBaitExited;
         #endregion
 
 
@@ -62,6 +63,10 @@ namespace VRF.Driver
         public void TriggerBaitEntered()
         {
             OnBaitEntered?.Invoke();
+        }
+        public void TriggerBaitExited()
+        {
+            OnBaitExited?.Invoke();
         }
         #endregion
     }

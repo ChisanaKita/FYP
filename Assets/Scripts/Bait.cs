@@ -70,16 +70,14 @@ namespace VRF
         {
             if (other.tag == "Water")
             {
+                EntityDriver.Instance.TriggerBaitExited();
                 IsEnteredWater = false;
                 Debug.Log("Exited Water");
             }
         }
 
         #region Events
-        private void TODO()
-        {
 
-        }
         #endregion
     }
 }
