@@ -8,7 +8,7 @@ namespace VRF
 {
     public class Hand : MonoBehaviour
     {
-        private float PICKUP_DISTANCE = 0.3f;
+        private float PICKUP_DISTANCE = 0.5f;
 
         public SteamVR_Input_Sources CurrentHandInput = SteamVR_Input_Sources.LeftHand;
 
@@ -50,6 +50,10 @@ namespace VRF
             {
                 if (_HoldingObject != null)
                 {
+                    if (_HoldingObject.gameObject.tag == "Fish")
+                    {
+                        EntityDriver.Instance.TriggerPlayerGrabed();
+                    }
                     _HoldingObject.velocity = (transform.position - _HoldingObject.transform.position) / Time.fixedDeltaTime;
 
                     _HoldingObject.maxAngularVelocity = 20;

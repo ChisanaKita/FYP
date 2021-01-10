@@ -12,6 +12,8 @@ namespace VRF
 
         public Vector3 lastUp;
 
+        private readonly float AnglePreTurn = 90.0f;
+
 
         private void Awake()
         {
@@ -27,21 +29,21 @@ namespace VRF
 
             rotatedAroundX += rotationDifference;
 
-            if (rotatedAroundX >= 360.0f)
+            if (rotatedAroundX >= AnglePreTurn)
             {
                 Debug.Log("One positive rotation done", this);
 
                 EntityDriver.Instance.TriggerReelUp();
 
-                 rotatedAroundX -= 360.0f;
+                 rotatedAroundX -= AnglePreTurn;
             }
-            else if (rotatedAroundX <= -360.0f)
+            else if (rotatedAroundX <= -AnglePreTurn)
             {
                 Debug.Log("One negative rotation done", this);
 
                 EntityDriver.Instance.TriggerReelDown();
 
-                rotatedAroundX += 360.0f;
+                rotatedAroundX += AnglePreTurn;
             }
 
             // update last rotation

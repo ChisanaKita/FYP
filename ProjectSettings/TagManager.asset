@@ -9,6 +9,7 @@ TagManager:
   - Reel
   - Bait
   - Handle
+  - Fish
   layers:
   - Default
   - TransparentFX

@@ -42,11 +42,13 @@ namespace VRF
         private void Awake()
         {
             EntityDriver.Instance.OnBaitEntered += BaitEntered;
+            EntityDriver.Instance.OnPlayerGrabed += PlayerGrabed;
         }
 
         private void OnDestroy()
         {
             EntityDriver.Instance.OnBaitEntered -= BaitEntered;
+            EntityDriver.Instance.OnPlayerGrabed -= PlayerGrabed;
             base.DisposeTimer();
         }
         #endregion
@@ -61,6 +63,7 @@ namespace VRF
             IsTurning = false;
             Ismoving = false;
             IsCoroutineRunning = false;
+            IsOver = false;
 
             Name = Enum.GetName(typeof(FishType), Random.Range(0, Enum.GetNames(typeof(FishType)).Length - 1));
 
@@ -75,7 +78,7 @@ namespace VRF
         // Update is called once per frame
         void Update()
         {
-            if (!IsCatched && !IsBaiting)
+            if (!IsCatched && !IsBaiting && !IsOver)
             {
                 //Turn
                 if (IsTurning)
@@ -105,15 +108,11 @@ namespace VRF
                     _Mouth.velocity = transform.forward * 1;
                 }
             }
-            else
-            {
-                Debug.Log("3");
-            }
         }
 
         void FixedUpdate()
         {
-            if (IsBaiting || IsCatched)
+            if ((IsBaiting || IsCatched) && !IsOver)
             {
                 _Mouth.MovePosition(_Bait.transform.position);
             }
@@ -176,6 +175,11 @@ namespace VRF
             IsTurning = false;
             _Rigidbody.useGravity = true;
             _Animator.SetBool("IsMoving", true);
+        }
+
+        private void PlayerGrabed()
+        {
+            IsOver = true;
         }
 
         private void BaitEntered()

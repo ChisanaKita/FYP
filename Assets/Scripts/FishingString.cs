@@ -10,7 +10,7 @@ namespace VRF
     public class FishingString : MonoBehaviour
     {
         //private readonly Vector3 LINE_STARTING_POINT = new Vector3(0f, 0f, 20.65f);
-        private readonly Vector3 G_Force = new Vector3(0f, -0.1f, 0);
+        private readonly Vector3 G_Force = new Vector3(0f, -0.2f, 0);
 
         private LineRenderer _LineRanderer;
         private List<LineSegment> _LineSegments;
@@ -112,26 +112,6 @@ namespace VRF
         {
             DrawLines();
 
-            #region TESTING
-            //Down Fish Line
-            if (Input.GetKeyUp(KeyCode.DownArrow))
-            {
-                ReelDown();
-            }
-
-            //Up Fish Line
-            if (Input.GetKeyUp(KeyCode.UpArrow))
-            {
-                ReelUp();
-            }
-
-            //Clamp The Bait
-            if (Input.GetKey(KeyCode.Space))
-            {
-                ReelHoldRelease();
-            }
-            #endregion
-
             if (_LineSegments.Count > 3)
             {
 
@@ -147,35 +127,21 @@ namespace VRF
                     float error = (_LineSegments.Last().posNow - _Bait.position).magnitude;
                     Debug.Log("Error : " + error);
 
-                    if (!IsBaitInWater)
+                    if (IsBaitInWater)
                     {
-                        _Bait.MovePosition(_LineSegments.Last().posNow);
-                        //_Bait.useGravity = false;
-                        if (_LineSegments.Count < 25 && error > 0.8f)
+                        if (error > 0.1f)
                         {
-                            _LineSegments.Add(new LineSegment(_LineSegments.Last().posNow - _LineSegmentLengthOffset));
+                           _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
                         }
                     }
                     else
                     {
-                        if (error > 0.05f && error < 0.08f)
-                        {
-                            _Bait.MovePosition(_LineSegments.Last().posNow);
-                        }
+                        _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
                     }
 
                     LineSegment _LastSeg = _LineSegments.Last();
                     _LastSeg.posNow = _Bait.position;
                     _LineSegments[_LineSegments.Count - 1] = _LastSeg;
-                    
-
-                    
-                    /*
-                    if (error > 0.80f)
-                    {
-                        _Bait.velocity = _LineSegments.Last().posNow - _LineSegments.Last().posOld;
-                    }
-                    */
                 }
             }
             else
