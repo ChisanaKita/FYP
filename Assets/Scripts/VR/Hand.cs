@@ -8,7 +8,7 @@ namespace VRF
 {
     public class Hand : MonoBehaviour
     {
-        private float PICKUP_DISTANCE = 0.5f;
+        private readonly float PICKUP_DISTANCE = 0.5f;
 
         public SteamVR_Input_Sources CurrentHandInput = SteamVR_Input_Sources.LeftHand;
 
@@ -83,7 +83,7 @@ namespace VRF
             {
                 if (_InteractingObject != null)
                 {
-                    _InteractingObject.velocity =  2 * (transform.position - _InteractingObject.transform.position) / Time.fixedDeltaTime;
+                    _InteractingObject.velocity =  5 * (transform.position - _InteractingObject.transform.position) / Time.fixedDeltaTime;
                 }
             }
             #endregion

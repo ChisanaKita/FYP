@@ -16,8 +16,8 @@ namespace VRF
 
     public enum FishSize
     {
-        Mini = 1,
-        Midium,
+        Small,
+        Medium,
         Large
     }
 
@@ -28,6 +28,9 @@ namespace VRF
 
     public enum BaitType
     {
-        TestBait
+        TestBait,
+        SmallBait,
+        MediumBait,
+        LargeBait
     }
 }
