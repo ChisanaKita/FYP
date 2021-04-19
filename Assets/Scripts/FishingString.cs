@@ -53,7 +53,8 @@ namespace VRF
             if (_LineSegments.Count > 3)
             {
                 _LineSegments.RemoveAt(_LineSegments.Count - 1);
-                _Bait.MovePosition(_LineSegments.Last().posNow);
+                if(_Bait != null)
+                    _Bait.MovePosition(_LineSegments.Last().posNow);
             }
         }
 
@@ -70,7 +71,8 @@ namespace VRF
         private void ReelHoldRelease()
         {
             IsReelHold = false;
-            _Bait.velocity = _LineSegments.Last().posNow - _LineSegments.Last().posOld;
+            if (_Bait != null)
+                _Bait.velocity = _LineSegments.Last().posNow - _LineSegments.Last().posOld;
         }
 
         private void BaitEnter()
@@ -101,7 +103,6 @@ namespace VRF
             _Reel = GameObject.FindGameObjectWithTag("Reel").transform;
             _SecondConstraint = transform.parent.Find("SecondConstraint");
             _ThirdConstraint = transform.parent.Find("ThirdConstraint");
-            _Bait = GameObject.FindGameObjectWithTag("Bait").GetComponent<Rigidbody>();
 
             IsReelHold = true;
             IsBaitInWater = false;
@@ -112,7 +113,7 @@ namespace VRF
         {
             DrawLines();
 
-            if (_LineSegments.Count > 3)
+            if (_LineSegments.Count > 3 && _Bait != null)
             {
 
                 if (IsReelHold)
@@ -146,14 +147,26 @@ namespace VRF
             }
             else
             {
-                _Bait.useGravity = false;
-                _Bait.MovePosition(_ThirdConstraint.position);
+                if (_Bait != null)
+                {
+                    _Bait.useGravity = false;
+                    _Bait.MovePosition(_ThirdConstraint.position);
+                }
+                
             }
         }
 
         private void FixedUpdate()
         {
             SimulateLine();
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Bait"))
+            {
+                _Bait = other.GetComponent<Rigidbody>();
+            }
         }
 
         private void DrawLines()

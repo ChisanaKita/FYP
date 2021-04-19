@@ -9,7 +9,7 @@ namespace VRF
     {
 
         public bool IsCoroutineRunning { get; set; }
-        public BaitType MyBaitType { get; set; }
+        public BaitType MyBaitType;
 
         private bool IsEnteredWater { get; set; }
         private Rigidbody _Rigidbody;
@@ -32,7 +32,6 @@ namespace VRF
         {
             IsEnteredWater = IsCoroutineRunning = false;
             _Rigidbody = GetComponent<Rigidbody>();
-            MyBaitType = BaitType.TestBait;
         }
 
         private void Update()

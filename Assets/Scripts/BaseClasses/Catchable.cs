@@ -62,7 +62,7 @@ namespace VRF.Util
         //Fishing Rod
         public virtual void OnTriggerEnter(Collider other)
         {
-            Debug.Log("Fishing Bait Entered!");
+            Debug.Log(string.Format("Fish {0} have collided with object: {1}", ToString(), other.name));
         }
 
         //Water Area

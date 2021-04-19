@@ -10,7 +10,7 @@ namespace VRF
     public class Fish : Catchable, IFish
     {
         //Base Class
-        public override FishSize Size => (FishSize)Random.Range(1, Enum.GetNames(typeof(FishSize)).Length - 1);
+        public override FishSize Size => (FishSize)Random.Range(0, Enum.GetNames(typeof(FishSize)).Length - 1);
         public override float SpawnHeight => transform.position.y;
 
         //Constant
@@ -131,13 +131,16 @@ namespace VRF
                 {
                     //Debug Message
                     base.OnTriggerEnter(other);
-                    Debug.Log("1");
-                    ChangeMovingStatus(false);
-                    StopCoroutine(AttemptToTurn());
-                    EntityDriver.Instance.TriggerFishBiting();
-                    StartCatchTimer(5000);
-                    _Mouth.velocity = Vector3.zero;
-                    _Bait = other.gameObject;
+                    if ((int)other.GetComponent<Bait>().MyBaitType > (int)Size)
+                    {
+                        Debug.Log("Fish have baited!");
+                        ChangeMovingStatus(false);
+                        StopCoroutine(AttemptToTurn());
+                        EntityDriver.Instance.TriggerFishBiting();
+                        StartCatchTimer(5000);
+                        _Mouth.velocity = Vector3.zero;
+                        _Bait = other.gameObject;
+                    }
                 }
             }
 
@@ -145,7 +148,6 @@ namespace VRF
             {
                 //ChangeMovingStatus(true);
             }
-            Debug.Log("Now entered triger : " + other.tag);
         }
         
         public override void OnTriggerExit(Collider other)
