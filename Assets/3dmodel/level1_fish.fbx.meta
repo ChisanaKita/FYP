@@ -1,17 +1,14 @@
 fileFormatVersion: 2
-guid: d0a72dbff98b57c4da389e8f624aeab7
+guid: 02d7ba30a7e1a7342b52560f31d2e1b5
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Swim_Loop
+    second: Still_Post
   - first:
       74: 571188223677945357
     second: Swim_Loop
-  - first:
-      74: 8702240185011790673
-    second: Still_Post
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -41,11 +38,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Swim_Loop
+      name: Still_Post
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 31
+      lastFrame: 0
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -70,11 +67,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Still_Post
+      name: Swim_Loop
       takeName: Take 001
       internalID: 0
-      firstFrame: 38
-      lastFrame: 39
+      firstFrame: 30
+      lastFrame: 150
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
