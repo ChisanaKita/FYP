@@ -7,32 +7,34 @@ namespace VRF
 {
     public class PanelManager : MonoBehaviour
     {
-        public Panel Panel1 = null;
-        public Panel Panel2 = null;
-        public Panel Panel3 = null;
+        public GameObject Main_Panel;
+        public GameObject Resource_Panel;
+        public GameObject Tool_Panel;
 
         private void Start()
         {
-            Panel1.Show();
+            Tool_Panel.SetActive(false);
+            Resource_Panel.SetActive(false);
+            Main_Panel.SetActive(true);
         }
 
-        public void OnClickBackpackButton(Panel panel1)
+        public void OnClickBackpackButton(GameObject Main_Panel)
         {
-            Panel2.Hide();
-            Panel3.Hide();
-            Panel1.Show();
+            Tool_Panel.SetActive(false);
+            Resource_Panel.SetActive(false);
+            Main_Panel.SetActive(true);
         }
-        public void OnClickToolButton(Panel panel2)
+        public void OnClickToolButton(GameObject Tool_Panel)
         {
-            Panel1.Hide();
-            Panel3.Hide();
-            Panel2.Show();
+            Main_Panel.SetActive(false);
+            Resource_Panel.SetActive(false);
+            Tool_Panel.SetActive(true);
         }
-        public void OnClickResourceButton(Panel panel3)
+        public void OnClickResourceButton(GameObject Resource_Panel)
         {
-            Panel1.Hide();
-            Panel2.Hide();
-            Panel3.Show();
+            Main_Panel.SetActive(false);
+            Tool_Panel.SetActive(false);
+            Resource_Panel.SetActive(true);
         }
     }
 }
