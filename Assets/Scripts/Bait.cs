@@ -1,19 +1,15 @@
-﻿using System.Collections;
+﻿using System.Timers;
 using UnityEngine;
 using VRF.Driver;
-using VRF.Util;
 
 namespace VRF
 {
     public class Bait : MonoBehaviour
     {
-
-        public bool IsCoroutineRunning { get; set; }
         public BaitType MyBaitType;
 
-        private bool IsEnteredWater { get; set; }
+        private bool IsEnteredWater;
         private Rigidbody _Rigidbody;
-
         private float DEBUG_PeekVelocity = 0;
 
         #region Event_Handling
@@ -30,7 +26,7 @@ namespace VRF
 
         private void Start()
         {
-            IsEnteredWater = IsCoroutineRunning = false;
+            IsEnteredWater = false;
             _Rigidbody = GetComponent<Rigidbody>();
         }
 
@@ -75,8 +71,5 @@ namespace VRF
             }
         }
 
-        #region Events
-
-        #endregion
     }
 }
