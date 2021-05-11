@@ -16,7 +16,6 @@ namespace VRF
 
         public void GetPlayerObj()
         {
-            //
             string data = GetJSONstring();
             PlayerObj = data == "FirstTime" ? new PlayerObj() : JsonUtility.FromJson<PlayerObj>(data);
         }
@@ -43,7 +42,6 @@ namespace VRF
 
         public void SavePlayerObj()
         {
-            //
             FileStream file = File.Exists(SavePath) ? File.OpenWrite(SavePath) : File.Create(SavePath);
             BinaryWriter binaryWriter = new BinaryWriter(file);
             binaryWriter.Write(JsonUtility.ToJson(PlayerObj));
@@ -51,16 +49,25 @@ namespace VRF
             file.Close();
         }
 
+        public void SavePlayerObjectAndQuit()
+        {
+            SavePlayerObj();
+            Application.Quit();
+        }
+
         public void AddItem(GameObject gameObject)
         {
-            //
             PlayerObj.Inventory.Add(gameObject);
         }
 
         public void RemoveItem(GameObject gameObject)
         {
-            //
             PlayerObj.Inventory.Remove(gameObject);
+        }
+
+        public void RemoveItem(int index)
+        {
+            PlayerObj.Inventory.RemoveAt(index);
         }
 
         public void RemoveAll()
@@ -70,19 +77,16 @@ namespace VRF
 
         public void SetCurrent_S_Bait(GameObject gameObject)
         {
-            //
             PlayerObj.Current_S_Bait = gameObject;
         }
 
         public void SetCurrent_M_Bait(GameObject gameObject)
         {
-            //
             PlayerObj.Current_M_Bait = gameObject;
         }
 
         public void SetCurrent_L_Bait(GameObject gameObject)
         {
-            //
             PlayerObj.Current_L_Bait = gameObject;
         }
 
