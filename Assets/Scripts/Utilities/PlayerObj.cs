@@ -18,7 +18,7 @@ namespace VRF
             Current_S_Bait = Resources.Load<GameObject>("Prefab/Baits/FirstBait");
             Current_M_Bait = null;
             Current_L_Bait = null;
-            Balance = 1000;
+            Balance = 200;
         }
     }
 }

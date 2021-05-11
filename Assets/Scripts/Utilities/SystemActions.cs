@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace VRF
+namespace VRF.Util
 {
     public class SystemActions : MonoBehaviour
     {
@@ -16,9 +16,25 @@ namespace VRF
             Player.Instance.RemoveAllFish();
         }
 
-        public void SellItemAtIndex(int index)
+        public void SellFishAtIndex(int index)
         {
-            Player.Instance.RemoveItem(index);
+            Player.Instance.RemoveFish(index);
+        }
+
+        public void Buy(GameObject gameObject, int price, int quantity)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                if (Player.Instance.GetBalance() - price > 0)
+                {
+                    Player.Instance.AddItem(gameObject);
+                    Player.Instance.SubtractBalance(price);
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 }

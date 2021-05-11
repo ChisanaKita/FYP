@@ -60,19 +60,31 @@ namespace VRF
             PlayerObj.Inventory.Add(gameObject);
         }
 
-        public void RemoveItem(GameObject gameObject)
+        public void RemoveFish(GameObject gameObject)
         {
+            if (gameObject.tag.Equals("Fish"))
+            {
+                AddBalance((int)gameObject.GetComponent<Fish>().Size * 100);
+            }
             PlayerObj.Inventory.Remove(gameObject);
         }
 
-        public void RemoveItem(int index)
+        public void RemoveFish(int index)
         {
+            if (PlayerObj.Inventory[index].tag.Equals("Fish"))
+            {
+                AddBalance((int)PlayerObj.Inventory[index].GetComponent<Fish>().Size * 100);
+            }
             PlayerObj.Inventory.RemoveAt(index);
         }
 
         public void RemoveAllFish()
         {
-            PlayerObj.Inventory.RemoveRange(0, PlayerObj.Inventory.Count);
+            for (int i = 0; i < PlayerObj.Inventory.Count; i++)
+            {
+                if(PlayerObj.Inventory[i].tag.Equals("Fish"))
+                    AddBalance((int)PlayerObj.Inventory[i].GetComponent<Fish>().Size * 100);
+            }
         }
 
         public void SetCurrent_S_Bait(GameObject gameObject)
@@ -102,6 +114,21 @@ namespace VRF
         public GameObject Get_L_Bait()
         {
             return PlayerObj.Current_L_Bait;
+        }
+
+        public int GetBalance()
+        {
+            return PlayerObj.Balance;
+        }
+
+        public void AddBalance(int amongs)
+        {
+            PlayerObj.Balance += amongs;
+        }
+
+        public void SubtractBalance(int amongs)
+        {
+            PlayerObj.Balance -= amongs;
         }
     }
 }
