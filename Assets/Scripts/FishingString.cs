@@ -113,47 +113,47 @@ namespace VRF
         {
             DrawLines();
 
-            if (_LineSegments.Count > 3 && _Bait != null)
+            if (_Bait != null)
             {
-
-                if (IsReelHold)
+                if (_LineSegments.Count > 3)
                 {
-                    _Bait.useGravity = false;
-                    _Bait.MovePosition(_LineSegments.Last().posNow);
-                }
-                else
-                {
-                    _Bait.useGravity = true;
-                    
-                    float error = (_LineSegments.Last().posNow - _Bait.position).magnitude;
-                    Debug.Log("Error : " + error);
 
-                    if (IsBaitInWater)
+                    if (IsReelHold)
                     {
-                        if (error > 0.1f)
-                        {
-                           _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
-                        }
+                        _Bait.useGravity = false;
+                        _Bait.MovePosition(_LineSegments.Last().posNow);
                     }
                     else
                     {
-                        _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
-                    }
+                        _Bait.useGravity = true;
 
-                    LineSegment _LastSeg = _LineSegments.Last();
-                    _LastSeg.posNow = _Bait.position;
-                    _LineSegments[_LineSegments.Count - 1] = _LastSeg;
+                        float error = (_LineSegments.Last().posNow - _Bait.position).magnitude;
+                        Debug.Log("Error : " + error);
+
+                        if (IsBaitInWater)
+                        {
+                            if (error > 0.1f)
+                            {
+                                _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
+                            }
+                        }
+                        else
+                        {
+                            _Bait.AddForce(_LineSegments.Last().posNow - _Bait.transform.position, ForceMode.VelocityChange);
+                        }
+
+                        LineSegment _LastSeg = _LineSegments.Last();
+                        _LastSeg.posNow = _Bait.position;
+                        _LineSegments[_LineSegments.Count - 1] = _LastSeg;
+                    }
                 }
-            }
-            else
-            {
-                if (_Bait != null)
+                else
                 {
                     _Bait.useGravity = false;
                     _Bait.MovePosition(_ThirdConstraint.position);
                 }
-                
             }
+            
         }
 
         private void FixedUpdate()
