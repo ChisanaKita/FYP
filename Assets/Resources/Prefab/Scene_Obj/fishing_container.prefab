@@ -830,6 +830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7557266988361182325}
   - component: {fileID: 8028360352384191387}
+  - component: {fileID: 8028360352093750081}
   m_Layer: 0
   m_Name: fishing_container
   m_TagString: Untagged
@@ -844,7 +845,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7181868002633955023}
-  m_LocalRotation: {x: -0, y: 0.38268313, z: -0, w: 0.92387974}
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: -3.963, y: -1.5239389, z: 14.124}
   m_LocalScale: {x: 0.31764, y: 0.31764, z: 0.31764}
   m_Children:
@@ -867,6 +868,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 2.1, z: 1.5}
   m_Center: {x: 0, y: 1.15, z: -0.1}
+--- !u!114 &8028360352093750081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181868002633955023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff8d18efe0bdce4fad9a53702237760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7183704283426744778
 GameObject:
   m_ObjectHideFlags: 0
