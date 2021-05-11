@@ -16,8 +16,6 @@ namespace VRF
         //Constant
         private readonly float CONS_ROTATION_SPEED = 100;
 
-        
-
         //IFish
         public bool IsCatched { get; set; }
         public int CatchThreshold { get; set; }
@@ -35,7 +33,6 @@ namespace VRF
 
         private Vector3 TargetAngleVector;
         private Animator _Animator;
-
         private GameObject _Bait;
 
         #region Event_Handling
@@ -69,6 +66,7 @@ namespace VRF
 
             TargetAngleVector = GetRandomVectorY();
             transform.localEulerAngles = TargetAngleVector;
+            
 
             _Animator = GetComponent<Animator>();
 
@@ -146,8 +144,23 @@ namespace VRF
 
             if (other.tag == "FishArea")
             {
-                //ChangeMovingStatus(true);
+                ChangeMovingStatus(true);
             }
+
+            if (other.tag.Equals("Water"))
+            {
+                IsCatched = false;
+                IsBaiting = false;
+                IsBaitPresent = false;
+                IsTurning = false;
+                Ismoving = false;
+                IsCoroutineRunning = false;
+                IsOver = false;
+                _Rigidbody.useGravity = false;
+                ChangeMovingStatus(true);
+                _Animator.SetBool("IsMoving", true);
+            }
+
         }
         
         public override void OnTriggerExit(Collider other)
