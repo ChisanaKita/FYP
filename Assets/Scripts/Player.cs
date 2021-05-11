@@ -70,7 +70,7 @@ namespace VRF
             PlayerObj.Inventory.RemoveAt(index);
         }
 
-        public void RemoveAll()
+        public void RemoveAllFish()
         {
             PlayerObj.Inventory.RemoveRange(0, PlayerObj.Inventory.Count);
         }

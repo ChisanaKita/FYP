@@ -11,9 +11,14 @@ namespace VRF
             Player.Instance.SavePlayerObjectAndQuit();
         }
 
-        public void SellAll()
+        public void SellAllFish()
         {
-            Player.Instance.RemoveAll();
+            Player.Instance.RemoveAllFish();
+        }
+
+        public void SellItemAtIndex(int index)
+        {
+            Player.Instance.RemoveItem(index);
         }
     }
 }
