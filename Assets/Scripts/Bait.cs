@@ -10,7 +10,6 @@ namespace VRF
 
         private bool IsEnteredWater;
         private Rigidbody _Rigidbody;
-        private float DEBUG_PeekVelocity = 0;
 
         #region Event_Handling
         private void Awake()
@@ -20,7 +19,6 @@ namespace VRF
 
         private void OnDestroy()
         {
-            Debug.Log(DEBUG_PeekVelocity);
         }
         #endregion
 
@@ -32,10 +30,6 @@ namespace VRF
 
         private void Update()
         {
-            if (_Rigidbody.velocity.magnitude > DEBUG_PeekVelocity)
-            {
-                DEBUG_PeekVelocity = _Rigidbody.velocity.magnitude;
-            }
         }
 
         private void FixedUpdate()

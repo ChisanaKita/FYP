@@ -31,6 +31,7 @@ namespace VRF
             }
             else
             {
+                Debug.Log("== (Player): GetJSONstring (FirstTime)");
                 return "FirstTime";
             }
 
@@ -38,7 +39,7 @@ namespace VRF
             string RawData = binaryReader.ReadString();
             binaryReader.Close();
             file.Close();
-            Debug.Log("== (Player): GetJSONstring");
+            Debug.Log("== (Player): " + RawData);
             return RawData;
         }
 
@@ -54,7 +55,7 @@ namespace VRF
         public void SavePlayerObjectAndQuit()
         {
             SavePlayerObj();
-            Application.Quit();
+            Application.Quit(0);
         }
 
         public void AddItem(GameObject gameObject)

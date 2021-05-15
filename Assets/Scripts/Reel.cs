@@ -31,16 +31,12 @@ namespace VRF
 
             if (rotatedAroundX >= AnglePreTurn)
             {
-                Debug.Log("One positive rotation done", this);
-
                 EntityDriver.Instance.TriggerReelUp();
 
                  rotatedAroundX -= AnglePreTurn;
             }
             else if (rotatedAroundX <= -AnglePreTurn)
             {
-                Debug.Log("One negative rotation done", this);
-
                 EntityDriver.Instance.TriggerReelDown();
 
                 rotatedAroundX += AnglePreTurn;
