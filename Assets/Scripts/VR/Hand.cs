@@ -3,6 +3,7 @@
 using VRF.Driver;
 using UnityEngine;
 using Valve.VR;
+using UnityEngine.Events;
 
 namespace VRF
 {
@@ -11,6 +12,7 @@ namespace VRF
         private readonly float PICKUP_DISTANCE = 0.5f;
 
         public SteamVR_Input_Sources CurrentHandInput = SteamVR_Input_Sources.LeftHand;
+        public SteamVR_LoadLevel _LoadLevel;
 
         private bool IsHandGrabbing;
         private bool IsHandInteracting;
@@ -52,7 +54,11 @@ namespace VRF
                 {
                     if (_HoldingObject.gameObject.tag == "Fish")
                     {
-                        EntityDriver.Instance.TriggerPlayerGrabed();
+                        EntityDriver.Instance.TriggerPlayerGrabedFish();
+                    }
+                    if (_HoldingObject.gameObject.tag.Equals("Trash"))
+                    {
+                        EntityDriver.Instance.TriggerPlayerGrabedTrash();
                     }
                     _HoldingObject.velocity = (transform.position - _HoldingObject.transform.position) / Time.fixedDeltaTime;
 
@@ -96,6 +102,14 @@ namespace VRF
             if (SteamVR_Actions.VRF.D_Down.GetStateUp(CurrentHandInput))
             {
                 EntityDriver.Instance.TriggerReelHoldRelease();
+            }
+        }
+
+        private void Update()
+        {
+            if (SteamVR_Actions.vRF_Menu.GetStateUp(CurrentHandInput))
+            {
+                _LoadLevel.Trigger();
             }
         }
     }
