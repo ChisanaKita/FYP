@@ -7,34 +7,47 @@ namespace VRF
 {
     public class PanelManager : MonoBehaviour
     {
-        public GameObject Main_Panel;
-        public GameObject Resource_Panel;
-        public GameObject Tool_Panel;
+        public CanvasGroup Inventory_Panel;
+        public CanvasGroup Resource_Panel;
+        public CanvasGroup Tool_Panel;
+
+        public Button BTN_Inventory, BTN_Resource, BTN_Tool;
 
         private void Start()
         {
-            Tool_Panel.SetActive(false);
-            Resource_Panel.SetActive(false);
-            Main_Panel.SetActive(true);
+            BTN_Inventory.onClick.AddListener(OnInventoryClicked);
+            BTN_Resource.onClick.AddListener(OnResourceClicked);
+            BTN_Tool.onClick.AddListener(OnToolClicked);
         }
 
-        public void OnClickBackpackButton(GameObject Main_Panel)
+        public void OnInventoryClicked()
         {
-            Tool_Panel.SetActive(false);
-            Resource_Panel.SetActive(false);
-            Main_Panel.SetActive(true);
+            SetView(Inventory_Panel, Resource_Panel, Tool_Panel);
         }
-        public void OnClickToolButton(GameObject Tool_Panel)
+
+        public void OnResourceClicked()
         {
-            Main_Panel.SetActive(false);
-            Resource_Panel.SetActive(false);
-            Tool_Panel.SetActive(true);
+            SetView(Resource_Panel, Inventory_Panel, Tool_Panel);
         }
-        public void OnClickResourceButton(GameObject Resource_Panel)
+
+        public void OnToolClicked()
         {
-            Main_Panel.SetActive(false);
-            Tool_Panel.SetActive(false);
-            Resource_Panel.SetActive(true);
+            SetView(Tool_Panel, Resource_Panel, Inventory_Panel);
+        }
+
+        private void SetView(CanvasGroup target, CanvasGroup other1, CanvasGroup other2)
+        {
+            target.alpha = 1.0f;
+            other1.alpha = 0;
+            other2.alpha = 0;
+
+            target.blocksRaycasts = true;
+            other1.blocksRaycasts = false;
+            other2.blocksRaycasts = false;
+
+            target.interactable = true;
+            other1.interactable = false;
+            other2.interactable = false;
         }
     }
 }
