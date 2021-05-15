@@ -22,7 +22,8 @@ namespace VRF.Driver
         //Fishs events
         internal event Action OnBaitEntered;
         internal event Action OnBaitExited;
-        internal event Action OnPlayerGrabed;
+        internal event Action OnPlayerGrabedFish;
+        internal event Action OnPlayerGrabedTrash;
         #endregion
 
 
@@ -67,9 +68,14 @@ namespace VRF.Driver
         {
             OnBaitExited?.Invoke();
         }
-        public void TriggerPlayerGrabed()
+        public void TriggerPlayerGrabedFish()
         {
-            OnPlayerGrabed?.Invoke();
+            OnPlayerGrabedFish?.Invoke();
+        }
+
+        public void TriggerPlayerGrabedTrash()
+        {
+            OnPlayerGrabedTrash?.Invoke();
         }
         #endregion
     }
