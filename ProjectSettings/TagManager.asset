@@ -11,6 +11,7 @@ TagManager:
   - Handle
   - Fish
   - ToolTip
+  - Trash
   layers:
   - Default
   - TransparentFX
