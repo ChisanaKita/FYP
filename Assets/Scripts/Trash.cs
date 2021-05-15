@@ -14,17 +14,18 @@ public class Trash : MonoBehaviour
 
     private void Awake()
     {
-        EntityDriver.Instance.OnPlayerGrabed += PlayerGrabed;
+        EntityDriver.Instance.OnPlayerGrabedTrash += PlayerGrabed;
     }
 
     private void OnDestroy()
     {
-        EntityDriver.Instance.OnPlayerGrabed -= PlayerGrabed;
+        EntityDriver.Instance.OnPlayerGrabedTrash -= PlayerGrabed;
     }
 
     public void PlayerGrabed()
     {
         IsPlayerGrabed = true;
+        Bait = null;
     }
 
     private void Start()
