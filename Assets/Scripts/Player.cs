@@ -14,10 +14,11 @@ namespace VRF
 
         private string SavePath = Application.persistentDataPath + "SaveData.json";
 
-        public void GetPlayerObj()
+        public void InitPlayerObj()
         {
             string data = GetJSONstring();
             PlayerObj = data == "FirstTime" ? new PlayerObj() : JsonUtility.FromJson<PlayerObj>(data);
+            Debug.Log("== (Player): InitPlayerObj");
         }
 
         private string GetJSONstring()
@@ -37,6 +38,7 @@ namespace VRF
             string RawData = binaryReader.ReadString();
             binaryReader.Close();
             file.Close();
+            Debug.Log("== (Player): GetJSONstring");
             return RawData;
         }
 
@@ -106,7 +108,6 @@ namespace VRF
         {
             return PlayerObj.Current_S_Bait;
         } 
-
         public GameObject Get_M_Bait()
         {
             return PlayerObj.Current_M_Bait;
@@ -129,6 +130,11 @@ namespace VRF
         public void SubtractBalance(int amongs)
         {
             PlayerObj.Balance -= amongs;
+        }
+
+        public List<GameObject> GetInventory()
+        {
+            return this.PlayerObj.Inventory;
         }
     }
 }
