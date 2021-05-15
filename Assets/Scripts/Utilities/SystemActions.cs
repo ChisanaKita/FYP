@@ -7,20 +7,13 @@ namespace VRF.Util
 {
     public class SystemActions : MonoBehaviour
     {
-        public GameObject Inventory_view;
-        public GameObject Resource_view;
-        public GameObject Tool_view;
-
         public Text product_Num;
         public int currentNum = 0;
         public Button SellAllBTN;
 
         private void Start()
         {
-            Inventory_view.SetActive(true);
-            Resource_view.SetActive(false);
-            Tool_view.SetActive(false);
-            product_Num.text = "0";
+            Player.Instance.InitPlayerObj();
         }
 
         public void Quit()
@@ -52,29 +45,6 @@ namespace VRF.Util
                     break;
                 }
             }
-        }
-
-        public void OnClickInventoryButton(GameObject Inventory_view)
-        {
-
-            Inventory_view.SetActive(true);
-            Resource_view.SetActive(false);
-            Tool_view.SetActive(false);
-            SellAllBTN.enabled = true;
-        }
-        public void OnClickToolButton(GameObject Tool_view)
-        {
-            Tool_view.SetActive(true);
-            Resource_view.SetActive(false);
-            Inventory_view.SetActive(false);
-            SellAllBTN.enabled = false;
-        }
-        public void OnClickResourceButton(GameObject Resource_view)
-        {
-            Resource_view.SetActive(true);
-            Tool_view.SetActive(false);
-            Inventory_view.SetActive(false);
-            SellAllBTN.enabled = false;
         }
 
         public void Plus()
