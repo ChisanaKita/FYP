@@ -39,13 +39,13 @@ namespace VRF
         private void Awake()
         {
             EntityDriver.Instance.OnBaitEntered += BaitEntered;
-            EntityDriver.Instance.OnPlayerGrabed += PlayerGrabed;
+            EntityDriver.Instance.OnPlayerGrabedFish += PlayerGrabed;
         }
 
         private void OnDestroy()
         {
             EntityDriver.Instance.OnBaitEntered -= BaitEntered;
-            EntityDriver.Instance.OnPlayerGrabed -= PlayerGrabed;
+            EntityDriver.Instance.OnPlayerGrabedFish -= PlayerGrabed;
             base.DisposeTimer();
         }
         #endregion
@@ -96,14 +96,13 @@ namespace VRF
                     if (IsCoroutineRunning == false)
                     {
                         StartCoroutine(AttemptToTurn());
-                        Debug.Log("Attempting to turn.");
                     }
                 }
 
                 //Move
                 if (Ismoving)
                 {
-                    _Mouth.velocity = transform.forward * 1;
+                    _Rigidbody.velocity = transform.forward * 1;
                 }
             }
         }
@@ -216,7 +215,6 @@ namespace VRF
             {
                 IsTurning = true;
                 TargetAngleVector = GetRandomVectorY();
-                Debug.Log("Truning Vector : " + TargetAngleVector.y);
             }
             IsCoroutineRunning = false;
         }
