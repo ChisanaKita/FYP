@@ -11,6 +11,7 @@ namespace VRF
         public Transform Contents;
 
         private Button[] InventoryButtons;
+        List<GameObject> inventory;
 
         // Start is called before the first frame update
         void Start()
@@ -31,8 +32,8 @@ namespace VRF
 
         private void OnInventoryItemClicked(int Button_Index)
         {
-            Player.Instance.RemoveFish(Button_Index);
-            Player.Instance.AddBalance(100);
+            Player.Instance.AddBalance((int)inventory[Button_Index].GetComponent<Fish>().Size * 100);
+            Player.Instance.RemoveFish(inventory[Button_Index]);
             Refreash();
         }
 
@@ -40,13 +41,13 @@ namespace VRF
         {
             if (Player.Instance.GetInventory().Count > 0)
             {
-                List<GameObject> inventory = Player.Instance.GetInventory();
+                inventory = Player.Instance.GetInventory();
                 for (int i = 0; i < InventoryButtons.Length; i++)
                 {
                     if (i < inventory.Count)
                     {
                         InventoryButtons[i].GetComponentInChildren<Text>().text = inventory[i].name;
-                        InventoryButtons[i].interactable = true;
+                        InventoryButtons[i].interactable = inventory[i].tag.Equals("Fish") ? true : false;
                     }
                     else
                     {
