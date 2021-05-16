@@ -260,7 +260,7 @@ namespace VRF
         {
             IsCoroutineRunning = true;
             yield return new WaitForSeconds(30);
-            if ((Random.Range(0, 50) % 5) == 0)
+            if ((Random.Range(0, 100) % 10) == 0)
             {
                 IsTrashSpawned = true;
                 Instantiate(Resources.Load("Prefab/Trash"), _Bait.transform.position, _Bait.transform.rotation);
