@@ -16,7 +16,7 @@ namespace VRF
 
     public enum FishSize
     {
-        Small,
+        Small = 1,
         Medium,
         Large
     }
