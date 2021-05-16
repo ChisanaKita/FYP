@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using VRF.Driver;
+using System.Collections;
 
 namespace VRF
 {
@@ -27,6 +28,8 @@ namespace VRF
 
         private bool IsReelHold;
         private bool IsBaitInWater;
+        private bool IsCoroutineRunning;
+        private bool IsTrashSpawned;
 
         #region EVENT_HANDLER
         private void Awake()
@@ -37,6 +40,7 @@ namespace VRF
             EntityDriver.Instance.OnReelHoldRelease += ReelHoldRelease;
             EntityDriver.Instance.OnBaitEntered += BaitEnter;
             EntityDriver.Instance.OnBaitExited += BaitExit;
+            EntityDriver.Instance.OnPlayerGrabedTrash += PlayerGrabbedTrash;
         }
         private void OnDestroy()
         {
@@ -46,6 +50,7 @@ namespace VRF
             EntityDriver.Instance.OnReelHoldRelease -= ReelHoldRelease;
             EntityDriver.Instance.OnBaitEntered -= BaitEnter;
             EntityDriver.Instance.OnBaitExited -= BaitExit;
+            EntityDriver.Instance.OnPlayerGrabedTrash -= PlayerGrabbedTrash;
         }
 
         private void ReelUp()
@@ -85,6 +90,11 @@ namespace VRF
             IsBaitInWater = false;
         }
 
+        private void PlayerGrabbedTrash()
+        {
+            IsTrashSpawned = false;
+        }
+
         #endregion
 
         // Start is called before the first frame update
@@ -104,8 +114,10 @@ namespace VRF
             _SecondConstraint = transform.parent.Find("SecondConstraint");
             _ThirdConstraint = transform.parent.Find("ThirdConstraint");
 
-            IsReelHold = true;
+            IsReelHold = false;
             IsBaitInWater = false;
+            IsTrashSpawned = false;
+            IsCoroutineRunning = false;
         }
 
         // Update is called once per frame
@@ -128,7 +140,6 @@ namespace VRF
                         _Bait.useGravity = true;
 
                         float error = (_LineSegments.Last().posNow - _Bait.position).magnitude;
-                        Debug.Log("Error : " + error);
 
                         if (IsBaitInWater)
                         {
@@ -151,6 +162,11 @@ namespace VRF
                 {
                     _Bait.useGravity = false;
                     _Bait.MovePosition(_ThirdConstraint.position);
+                }
+
+                if (IsBaitInWater && !IsCoroutineRunning && !IsTrashSpawned)
+                {
+                    StartCoroutine(AttemptToSpawnTrash());
                 }
             }
             
@@ -238,6 +254,18 @@ namespace VRF
                     _LineSegments[i + 1] = secondSeg;
                 }
             }
+        }
+
+        private IEnumerator AttemptToSpawnTrash()
+        {
+            IsCoroutineRunning = true;
+            yield return new WaitForSeconds(30);
+            if ((Random.Range(0, 50) % 5) == 0)
+            {
+                IsTrashSpawned = true;
+                Instantiate(Resources.Load("Prefab/Trash"), _Bait.transform.position, _Bait.transform.rotation);
+            }
+            IsCoroutineRunning = false;
         }
 
         public struct LineSegment
