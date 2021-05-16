@@ -28,10 +28,6 @@ namespace VRF
             _Rigidbody = GetComponent<Rigidbody>();
         }
 
-        private void Update()
-        {
-        }
-
         private void FixedUpdate()
         {
             if (IsEnteredWater)

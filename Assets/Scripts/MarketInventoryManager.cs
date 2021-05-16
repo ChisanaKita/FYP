@@ -24,12 +24,6 @@ namespace VRF
             Refreash();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            //
-        }
-
         private void OnInventoryItemClicked(int Button_Index)
         {
             Player.Instance.AddBalance((int)inventory[Button_Index].GetComponent<Fish>().Size * 100);
