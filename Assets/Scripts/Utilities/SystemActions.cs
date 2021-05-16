@@ -26,11 +26,6 @@ namespace VRF.Util
             Player.Instance.RemoveAllFish();
         }
 
-        public void SellFishAtIndex(int index)
-        {
-            Player.Instance.RemoveFish(index);
-        }
-
         public void Buy(GameObject gameObject, int price, int quantity)
         {
             for (int i = 0; i < quantity; i++)
