@@ -7,7 +7,6 @@ using VRF.Driver;
 public class Trash : MonoBehaviour
 {
     public Rigidbody GrabbingBody;
-    public Rigidbody AttachPoint;
 
     private GameObject Bait;
     private bool IsPlayerGrabed;
@@ -37,7 +36,7 @@ public class Trash : MonoBehaviour
     {
         if (Bait != null && !IsPlayerGrabed)
         {
-            AttachPoint.MovePosition(Bait.transform.position);
+            GrabbingBody.MovePosition(Bait.transform.position);
         }
     }
 
@@ -49,9 +48,8 @@ public class Trash : MonoBehaviour
             {
                 Destroy(gameObject.transform.root.gameObject, 1000);
             }
-        }
-        
-        if (other.tag.Equals("Bait"))
+        } 
+        else if (other.tag.Equals("Bait"))
         {
             Bait = other.gameObject;
         }
