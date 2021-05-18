@@ -139,17 +139,20 @@ namespace VRF
                 ChangeMovingStatus(true);
             }
 
-            if (other.tag.Equals("Water"))
+            if (IsOver)
             {
-                transform.position.Set(transform.position.x, SpawnHeight, transform.position.z);
-                IsCatched = false;
-                IsBaiting = false;
-                IsCoroutineRunning = false;
-                IsTurning = false;
-                IsOver = false;
-                _Rigidbody.useGravity = false;
-                _Animator.SetBool("IsMoving", true);
-                _Rigidbody.MoveRotation(Quaternion.identity);
+                if (other.tag.Equals("Water"))
+                {
+                    transform.position.Set(transform.position.x, SpawnHeight, transform.position.z);
+                    IsCatched = false;
+                    IsBaiting = false;
+                    IsCoroutineRunning = false;
+                    IsTurning = false;
+                    IsOver = false;
+                    _Rigidbody.useGravity = false;
+                    _Animator.SetBool("IsMoving", true);
+                    _Rigidbody.MoveRotation(Quaternion.identity);
+                }
             }
 
         }

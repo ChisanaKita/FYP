@@ -16,9 +16,13 @@ namespace VRF
 
         public void InitPlayerObj()
         {
-            string data = GetJSONstring();
-            PlayerObj = data == "FirstTime" ? new PlayerObj() : JsonUtility.FromJson<PlayerObj>(data);
-            Debug.Log("== (Player): InitPlayerObj");
+            if (PlayerObj == null)
+            {
+                string data = GetJSONstring();
+                PlayerObj = data == "FirstTime" ? new PlayerObj() : JsonUtility.FromJson<PlayerObj>(data);
+                Debug.Log("== (Player): InitPlayerObj");
+            }
+            
         }
 
         private string GetJSONstring()
@@ -58,26 +62,20 @@ namespace VRF
             Application.Quit(0);
         }
 
-        public void AddItem(GameObject gameObject)
+        public void AddItem(FishSize fish)
         {
-            PlayerObj.Inventory.Add(gameObject);
+            PlayerObj.Inventory.Add(fish);
         }
 
-        public void RemoveFish(GameObject gameObject)
+        public void RemoveFish(FishSize fish)
         {
-            if (gameObject.tag.Equals("Fish"))
-            {
-                AddBalance((int)gameObject.GetComponent<Fish>().Size * 100);
-            }
-            PlayerObj.Inventory.Remove(gameObject);
+            AddBalance((int)fish * 100);
+            PlayerObj.Inventory.Remove(fish);
         }
 
         public void RemoveFish(int index)
         {
-            if (PlayerObj.Inventory[index].tag.Equals("Fish"))
-            {
-                AddBalance((int)PlayerObj.Inventory[index].GetComponent<Fish>().Size * 100);
-            }
+            AddBalance((int)PlayerObj.Inventory[index] * 100);
             PlayerObj.Inventory.RemoveAt(index);
         }
 
@@ -85,9 +83,9 @@ namespace VRF
         {
             for (int i = 0; i < PlayerObj.Inventory.Count; i++)
             {
-                if(PlayerObj.Inventory[i].tag.Equals("Fish"))
-                    AddBalance((int)PlayerObj.Inventory[i].GetComponent<Fish>().Size * 100);
+                AddBalance((int)PlayerObj.Inventory[i] * 100);
             }
+            PlayerObj.Inventory.Clear();
         }
 
         public void SetCurrent_S_Bait(GameObject gameObject)
@@ -133,7 +131,7 @@ namespace VRF
             PlayerObj.Balance -= amongs;
         }
 
-        public List<GameObject> GetInventory()
+        public List<FishSize> GetInventory()
         {
             return this.PlayerObj.Inventory;
         }

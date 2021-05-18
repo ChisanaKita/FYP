@@ -9,7 +9,7 @@ namespace VRF
 {
     public class Hand : MonoBehaviour
     {
-        private readonly float PICKUP_DISTANCE = 0.5f;
+        private readonly float PICKUP_DISTANCE = 0.2f;
 
         public SteamVR_Input_Sources CurrentHandInput = SteamVR_Input_Sources.LeftHand;
         public SteamVR_LoadLevel _LoadLevel;

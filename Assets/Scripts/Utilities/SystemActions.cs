@@ -26,22 +26,6 @@ namespace VRF.Util
             Player.Instance.RemoveAllFish();
         }
 
-        public void Buy(GameObject gameObject, int price, int quantity)
-        {
-            for (int i = 0; i < quantity; i++)
-            {
-                if (Player.Instance.GetBalance() - price > 0)
-                {
-                    Player.Instance.AddItem(gameObject);
-                    Player.Instance.SubtractBalance(price);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
         public void Plus()
         {
             currentNum++;

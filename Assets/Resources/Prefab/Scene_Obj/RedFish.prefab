@@ -230,7 +230,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1400514404051149320}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 4, y: 1.5, z: 0.4}
@@ -728,6 +728,7 @@ GameObject:
   - component: {fileID: 8498652756831928959}
   - component: {fileID: 9131777268130830532}
   - component: {fileID: 1294199791}
+  - component: {fileID: 1286524091}
   m_Layer: 0
   m_Name: Mangrove_red_snapper
   m_TagString: Untagged
@@ -781,3 +782,22 @@ MonoBehaviour:
   _Rigidbody: {fileID: 1374628703170012598}
   IsTurning: 0
   Ismoving: 0
+--- !u!95 &1286524091
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9131777268130830533}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d952726ce7f861048a4394b676d316bc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

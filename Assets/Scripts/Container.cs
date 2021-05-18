@@ -18,9 +18,11 @@ namespace VRF
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag == "Fish")
+            if (other.tag.Equals("Fish"))
             {
-                Player.Instance.AddItem(other.gameObject);
+                Debug.Log("Container");
+                Player.Instance.AddItem(other.transform.root.GetComponentInChildren<Fish>().Size);
+                Destroy(other.transform.root.gameObject);
             }
         }
     }

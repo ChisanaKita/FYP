@@ -9,9 +9,10 @@ namespace VRF
     public class MarketInventoryManager : MonoBehaviour
     {
         public Transform Contents;
+        public Text money;
 
         private Button[] InventoryButtons;
-        List<GameObject> inventory;
+        List<FishSize> inventory;
 
         // Start is called before the first frame update
         void Start()
@@ -19,14 +20,15 @@ namespace VRF
             InventoryButtons = Contents.GetComponentsInChildren<Button>().OrderBy(Inventorys => Inventorys.name).ToArray();
             for (int i = 0; i < InventoryButtons.Length; i++)
             {
-                InventoryButtons[i].onClick.AddListener(delegate { OnInventoryItemClicked(i); });
+                int index = new int() ;
+                index = i;
+                InventoryButtons[i].onClick.AddListener(delegate { OnInventoryItemClicked(index); });
             }
             Refreash();
         }
 
         private void OnInventoryItemClicked(int Button_Index)
         {
-            Player.Instance.AddBalance((int)inventory[Button_Index].GetComponent<Fish>().Size * 100);
             Player.Instance.RemoveFish(inventory[Button_Index]);
             Refreash();
         }
@@ -40,8 +42,7 @@ namespace VRF
                 {
                     if (i < inventory.Count)
                     {
-                        InventoryButtons[i].GetComponentInChildren<Text>().text = inventory[i].name;
-                        InventoryButtons[i].interactable = inventory[i].tag.Equals("Fish") ? true : false;
+                        InventoryButtons[i].GetComponentInChildren<Text>().text = inventory[i].ToString();
                     }
                     else
                     {
@@ -57,6 +58,7 @@ namespace VRF
                     btn.GetComponentInChildren<Text>().text = "";
                 }
             }
+            money.text = Player.Instance.GetBalance().ToString();
         }
     }
 }
