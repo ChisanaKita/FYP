@@ -1,9 +1,9 @@
 # バーチャルフィッシング
 
-[img]
+![CoverImg](https://github.com/ChisanaKita/FYP/blob/master/Assets/src/Img/Level1.png)
 
 ## About
-This is a VR fishing game aiming to offer a great relaxing yet educational gameplay.
+This is a VR fishing game aims to offer a relaxing gameplay.
 
 ## Team
 Currently there are two contributors : 
